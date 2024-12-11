@@ -1,6 +1,7 @@
 package christmas.controller;
 
 import christmas.model.Day;
+import christmas.model.Orders;
 import christmas.utils.RecoveryUtils;
 import christmas.view.InputViewer;
 import christmas.view.OutputViewer;
@@ -15,8 +16,19 @@ public class ChristmasController {
         this.outputViewer = outputViewer;
     }
 
-    private void getDay() {
-        Day day = RecoveryUtils.executeWithRetry(inputViewer::promptDay, Day::from);
+    public void execute() {
+        Day day = getDay();
+        Orders orders = getOrder();
+
+
+    }
+
+    private Day getDay() {
+        return RecoveryUtils.executeWithRetry(inputViewer::promptDay, Day::from);
+    }
+
+    private Orders getOrder() {
+        return RecoveryUtils.executeWithRetry(inputViewer::promptOrder, Orders::from);
     }
 
 }

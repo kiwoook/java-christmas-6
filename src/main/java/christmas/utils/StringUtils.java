@@ -42,18 +42,26 @@ public class StringUtils {
         }
     }
 
-
     public static String[] split(String regex, String input, Integer fieldCount) {
+        return split(regex, input, fieldCount, ErrorMessage.INVALID_INPUT);
+    }
+
+    public static String[] split(String regex, String input, Integer fieldCount, ErrorMessage errorMessage) {
+        validateInput(regex, input, fieldCount, errorMessage);
+        return input.split(regex);
+    }
+
+    private static void validateInput(String regex, String input, Integer fieldCount, ErrorMessage errorMessage) {
         if (regex == null || input == null || input.isBlank() || input.endsWith(regex)) {
-            throw new CustomIllegalArgumentException(ErrorMessage.INVALID_INPUT.getMessage());
+            throw new CustomIllegalArgumentException(errorMessage);
         }
 
         String[] split = input.split(regex);
         if (fieldCount != null && split.length != fieldCount) {
-            throw new CustomIllegalArgumentException(ErrorMessage.INVALID_INPUT.getMessage());
+            throw new CustomIllegalArgumentException(errorMessage);
         }
-        return split;
     }
+
 
     public static String regexSeparators(List<String> separators) {
         StringJoiner regex = new StringJoiner(OR);
