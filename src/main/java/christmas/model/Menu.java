@@ -2,7 +2,6 @@ package christmas.model;
 
 import christmas.exception.CustomIllegalArgumentException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 public enum Menu {
@@ -43,5 +42,13 @@ public enum Menu {
             }
         }
         return true;
+    }
+
+    public int getTotalPrice(int quantity) {
+        return this.price * quantity;
+    }
+
+    public String getName() {
+        return name;
     }
 }

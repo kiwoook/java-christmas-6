@@ -1,11 +1,15 @@
 package christmas.model;
 
+import static christmas.utils.Constants.ENTER;
+
 import christmas.exception.CustomIllegalArgumentException;
 import christmas.utils.StringUtils;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringJoiner;
 
 public class Orders {
 
@@ -66,5 +70,25 @@ public class Orders {
         if (quantity <= 0) {
             throw new CustomIllegalArgumentException(ErrorMessage.INVALID_ORDER);
         }
+    }
+
+    public int sum() {
+        return map.entrySet().stream()
+                .mapToInt(entry -> entry.getKey().getTotalPrice(entry.getValue()))
+                .sum();
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner joiner = new StringJoiner(ENTER);
+
+        for (Entry<Menu, Integer> entry : map.entrySet()) {
+            String name = entry.getKey().getName();
+            String quantity = String.valueOf(entry.getValue());
+
+            joiner.add(name + " " + quantity + "개");
+        }
+
+        return joiner.toString();
     }
 }

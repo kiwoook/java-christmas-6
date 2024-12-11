@@ -1,8 +1,11 @@
 package christmas.model;
 
 import christmas.exception.CustomIllegalArgumentException;
+import java.util.List;
 
 public class Day {
+
+    private static List<Integer> specialDays = List.of(3, 10, 17, 24, 25, 31);
 
     private final int day;
 
@@ -30,4 +33,15 @@ public class Day {
             throw new CustomIllegalArgumentException(ErrorMessage.INVALID_DAY);
         }
     }
+
+    public int discountSpecialDay() {
+        if (specialDays.contains(day)) {
+            return 1000;
+        }
+
+        return 0;
+    }
+
+
+
 }
