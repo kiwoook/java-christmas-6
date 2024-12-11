@@ -1,6 +1,8 @@
 package christmas.model;
 
 import christmas.exception.CustomIllegalArgumentException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Day {
@@ -42,6 +44,23 @@ public class Day {
         return 0;
     }
 
+    public int dDayDiscount() {
+        if (day >= 1 && day <= 25) {
+            return 1000 + (day - 1) * 100;
+        }
+
+        return 0;
+    }
+
+    public boolean isWeekend() {
+        DayOfWeek dayOfWeek = DayOfWeek.from(LocalDate.of(2023, 12, this.day));
+
+        return dayOfWeek.equals(DayOfWeek.FRIDAY) || dayOfWeek.equals(DayOfWeek.SATURDAY);
+    }
 
 
+    @Override
+    public String toString() {
+        return String.valueOf(day);
+    }
 }

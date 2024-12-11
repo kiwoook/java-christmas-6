@@ -44,6 +44,10 @@ public enum Menu {
         return true;
     }
 
+    public boolean isCategory(Category category) {
+        return this.category == category;
+    }
+
     public int getTotalPrice(int quantity) {
         return this.price * quantity;
     }

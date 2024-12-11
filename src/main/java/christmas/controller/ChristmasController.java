@@ -2,6 +2,7 @@ package christmas.controller;
 
 import christmas.model.Day;
 import christmas.model.Orders;
+import christmas.model.Result;
 import christmas.utils.RecoveryUtils;
 import christmas.view.InputViewer;
 import christmas.view.OutputViewer;
@@ -20,7 +21,9 @@ public class ChristmasController {
         Day day = getDay();
         Orders orders = getOrder();
 
+        Result result = Result.of(orders, day);
 
+        outputViewer.printResult(day, result.toResult());
     }
 
     private Day getDay() {

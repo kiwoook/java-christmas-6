@@ -42,7 +42,6 @@ public class Orders {
         }
     }
 
-
     private static void addOrder(String value, Map<Menu, Integer> map) {
         String[] split = StringUtils.split("-", value, 2, ErrorMessage.INVALID_ORDER);
 
@@ -71,6 +70,27 @@ public class Orders {
             throw new CustomIllegalArgumentException(ErrorMessage.INVALID_ORDER);
         }
     }
+
+    public int discountByWeekEnd() {
+        return discountByCategory(Category.MAIN);
+    }
+
+    public int discountByWeekDay() {
+        return discountByCategory(Category.DESERT);
+    }
+
+    private int discountByCategory(Category category) {
+        int discount = 0;
+        for (Entry<Menu, Integer> entry : map.entrySet()) {
+            Menu menu = entry.getKey();
+            int quantity = entry.getValue();
+            if (menu.isCategory(category)) {
+                discount += 2023 * quantity;
+            }
+        }
+        return discount;
+    }
+
 
     public int sum() {
         return map.entrySet().stream()
