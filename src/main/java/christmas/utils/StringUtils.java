@@ -17,17 +17,6 @@ public class StringUtils {
     private StringUtils() {
     }
 
-    public static void validateNumber(String input) {
-        validateIsNumeric(input);
-        validateRange(input);
-    }
-
-    public static void validateInput(String input) {
-        if (input == null || input.isBlank()) {
-            throw new CustomIllegalArgumentException(ErrorMessage.INVALID_INPUT.getMessage());
-        }
-    }
-
     private static void validateIsNumeric(String input) {
         if (!NUMBER_PATTERN.matcher(input).matches()) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_INPUT.getMessage());
@@ -42,9 +31,6 @@ public class StringUtils {
         }
     }
 
-    public static String[] split(String regex, String input, Integer fieldCount) {
-        return split(regex, input, fieldCount, ErrorMessage.INVALID_INPUT);
-    }
 
     public static String[] split(String regex, String input, Integer fieldCount, ErrorMessage errorMessage) {
         validateInput(regex, input, fieldCount, errorMessage);
@@ -73,16 +59,6 @@ public class StringUtils {
         return regex.toString();
     }
 
-    public static String regexSeparators(String separator, String... separators) {
-        StringJoiner regex = new StringJoiner(OR);
-        regex.add(separator);
-
-        for (String sep : separators) {
-            regex.add(Pattern.quote(sep));
-        }
-
-        return regex.toString();
-    }
 
     public static String numberFormat(long number) {
         DecimalFormat format = new DecimalFormat("#,###");
