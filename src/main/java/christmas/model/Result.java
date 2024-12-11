@@ -9,6 +9,9 @@ import java.util.StringJoiner;
 
 public class Result {
 
+    private static final int MIN_BENEFIT_PRICE = 1_0000;
+    private static final int MIN_GIFT_PRICE = 12_0000;
+
     private final Orders orders;
     private final Day day;
     private int discount;
@@ -51,7 +54,7 @@ public class Result {
         StringJoiner joiner = new StringJoiner(ENTER)
                 .add(ENTER + "<증정 메뉴>");
 
-        if (orders.sum() >= 120000) {
+        if (orders.sum() >= MIN_GIFT_PRICE) {
             return joiner.add("샴페인 1개").toString();
         }
 
@@ -59,45 +62,26 @@ public class Result {
     }
 
     public String toBenefit() {
-        StringJoiner joiner = new StringJoiner(ENTER)
-                .add(ENTER + "<혜택 내역>");
+        StringJoiner joiner = new StringJoiner(ENTER).add(ENTER + "<혜택 내역>");
 
-        List<String> discountMessages = new ArrayList<>();
-
-        if (orders.sum() < 10000) {
+        if (orders.sum() < MIN_BENEFIT_PRICE) {
             return joiner.add("없음").toString();
         }
-        // 디데이 할인
-        int dDayDiscount = day.dDayDiscount();
-        if (dDayDiscount > 0) {
-            discount += dDayDiscount;
-            discountMessages.add("크리스마스 디데이 할인: -" + toPrice(dDayDiscount));
-        }
 
-        if (!day.isWeekend()) {
-            int discountByWeekDay = orders.discountByWeekDay();
-            discount += discountByWeekDay;
-            discountMessages.add("평일 할인: -" + toPrice(discountByWeekDay));
-        }
+        List<String> discountMessages = new ArrayList<>();
+        discountEvent(discountMessages);
 
-        if (day.isWeekend()) {
-            int discountByWeekEnd = orders.discountByWeekEnd();
-            discount += discountByWeekEnd;
-            discountMessages.add("평일 할인: -" + toPrice(discountByWeekEnd));
-        }
+        return toBenefit(joiner, discountMessages);
+    }
 
-        int specialDayDiscount = day.discountSpecialDay();
-        if (specialDayDiscount > 0) {
-            discount += specialDayDiscount;
-            discountMessages.add("특별 할인: -" + toPrice(specialDayDiscount));
-        }
+    private void discountEvent(List<String> discountMessages) {
+        discountDDayEvent(discountMessages);
+        discountByWeekOfDay(discountMessages);
+        discountSpecialDay(discountMessages);
+        discountGiftEvent(discountMessages);
+    }
 
-        if (orders.sum() >= 120000) {
-            int champagnePrice = Menu.CHAMPAGNE.getTotalPrice(1);
-            discount += champagnePrice;
-            discountMessages.add("증정 이벤트: -" + toPrice(champagnePrice));
-        }
-
+    private String toBenefit(StringJoiner joiner, List<String> discountMessages) {
         if (discountMessages.isEmpty()) {
             return joiner.add("없음").toString();
         }
@@ -109,6 +93,44 @@ public class Result {
         return joiner.toString();
     }
 
+    private void discountDDayEvent(List<String> discountMessages) {
+        int dDayDiscount = day.dDayDiscount();
+        if (dDayDiscount > 0) {
+            discount += dDayDiscount;
+            discountMessages.add("크리스마스 디데이 할인: -" + toPrice(dDayDiscount));
+        }
+    }
+
+    private void discountGiftEvent(List<String> discountMessages) {
+        if (orders.sum() >= MIN_GIFT_PRICE) {
+            int champagnePrice = Menu.CHAMPAGNE.getTotalPrice(1);
+            discount += champagnePrice;
+            discountMessages.add("증정 이벤트: -" + toPrice(champagnePrice));
+        }
+    }
+
+    private void discountSpecialDay(List<String> discountMessages) {
+        int specialDayDiscount = day.discountSpecialDay();
+        if (specialDayDiscount > 0) {
+            discount += specialDayDiscount;
+            discountMessages.add("특별 할인: -" + toPrice(specialDayDiscount));
+        }
+    }
+
+    private void discountByWeekOfDay(List<String> discountMessages) {
+        if (!day.isWeekend()) {
+            int discountByWeekDay = orders.discountByWeekDay();
+            discount += discountByWeekDay;
+            discountMessages.add("평일 할인: -" + toPrice(discountByWeekDay));
+        }
+
+        if (day.isWeekend()) {
+            int discountByWeekEnd = orders.discountByWeekEnd();
+            discount += discountByWeekEnd;
+            discountMessages.add("주말 할인: -" + toPrice(discountByWeekEnd));
+        }
+    }
+
     private String totalDiscount() {
         return new StringJoiner(ENTER)
                 .add(ENTER + "<총혜택 금액>")
@@ -118,7 +140,7 @@ public class Result {
     private String toFinalPrice() {
         int toFinalPrice = orders.sum() - discount;
 
-        if (orders.sum() >= 12000) {
+        if (orders.sum() >= MIN_GIFT_PRICE) {
             toFinalPrice += Menu.CHAMPAGNE.getTotalPrice(1);
         }
 

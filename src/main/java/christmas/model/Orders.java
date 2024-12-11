@@ -13,6 +13,7 @@ import java.util.StringJoiner;
 
 public class Orders {
 
+    private static final int DISCOUNT = 2023;
     private final Map<Menu, Integer> map;
 
     private Orders(Map<Menu, Integer> map) {
@@ -85,7 +86,7 @@ public class Orders {
             Menu menu = entry.getKey();
             int quantity = entry.getValue();
             if (menu.isCategory(category)) {
-                discount += 2023 * quantity;
+                discount += DISCOUNT * quantity;
             }
         }
         return discount;
